@@ -1,0 +1,2 @@
+include ':shared-base'
+project(':shared-base').projectDir = new File('../shared-base')

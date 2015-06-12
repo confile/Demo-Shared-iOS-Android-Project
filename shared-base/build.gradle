@@ -1,0 +1,52 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.7
+version = '1.0'
+
+repositories {
+  mavenCentral()
+  maven {
+    name = "sonatype"
+    url = "https://oss.sonatype.org/content/repositories/snapshots/"
+  }
+  flatDir {
+    dirs 'lib'
+  }
+}
+
+dependencies {
+  // for Annotation Processor
+  //  compile 'org.apache.commons:commons-lang3:3.4'
+  compile 'com.google.auto.service:auto-service:1.0-rc2'
+  compile 'com.google.auto.factory:auto-factory:1.0-beta2'
+  compile 'com.squareup:javapoet:1.0.0'
+  compile 'com.google.dagger:dagger:2.0'
+  
+  compile 'org.json:json:20140107'
+  compile 'javax.inject:javax.inject:1'
+  compile 'com.google.guava:guava:14.0.1'
+  compile name: 'j2objc_annotations'
+}
+
+jar {
+  from sourceSets.main.allSource
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+  description "Create source jar."
+  classifier = 'sources'
+  from(sourceSets.main.allSource) {
+    exclude '**/*processor*'
+  }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  description "Create javadocs."
+  classifier = 'javadoc'
+  from javadoc.destinationDir
+}
+
+artifacts {
+  archives sourcesJar
+}

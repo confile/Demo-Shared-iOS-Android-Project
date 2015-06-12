@@ -1,0 +1,91 @@
+apply plugin: 'java'
+apply plugin: 'apt'
+apply plugin: 'eclipse'
+apply from: 'j2objc.gradle'
+
+sourceCompatibility = 1.7
+version = '1.0'
+
+eclipse {
+  classpath {
+     downloadSources=true
+     downloadJavadoc=true
+  }
+}
+
+buildscript {
+  repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+      url "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+    maven {
+      url uri('../../0Gradle-Repo')
+    }
+  }
+  dependencies {
+    classpath 'com.jimdo.gradle:gradle-apt-plugin:0.5-SNAPSHOT'
+  }
+}
+
+ 
+repositories {
+  mavenCentral()
+  maven {
+    name = "sonatype"
+    url = "https://oss.sonatype.org/content/repositories/snapshots/"
+  }
+  maven {
+    name = "sonatypeGoogle"
+    url = "https://oss.sonatype.org/content/repositories/google-snapshots/"
+  }
+  flatDir {
+    dirs 'lib'
+  }
+}
+
+sourceSets {
+  apt{
+    java{
+      srcDir 'build/source/apt'
+      srcDir 'build/source/base'
+    }
+  }
+}
+
+
+dependencies {
+  apt (project(':shared-base'))
+  apt 'com.google.auto.factory:auto-factory:1.0-beta2'
+  apt 'com.google.dagger:dagger:2.0.1'
+  apt 'com.google.dagger:dagger-producers:2.0-beta'
+  apt 'com.google.dagger:dagger-compiler:2.0.1'
+
+  compile (project(':shared-base'))
+  compile 'com.google.guava:guava:14.0.1'
+  compile 'javax.inject:javax.inject:1'
+  compile 'org.json:json:20140107'
+  
+  compile 'com.google.auto.factory:auto-factory:1.0-beta2'
+  compile 'com.google.auto.service:auto-service:1.0-rc2'
+  
+  compile name: 'j2objc_annotations'
+  compile 'com.google.dagger:dagger:2.0.1'
+}
+
+jar {
+  from "build/source/apt", sourceSets.main.allSource       
+  exclude '**/*.zip'
+}
+
+task createWrapper(type: Wrapper) {
+  description "Create the Gralde Wrapper"
+  gradleVersion = '2.4'
+}
+
+
+j2objcConfig {
+ // ...
+}
+ 

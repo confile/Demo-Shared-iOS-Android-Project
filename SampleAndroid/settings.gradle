@@ -1,0 +1,7 @@
+include ':app'
+
+include ":shared-base"
+project(':shared-base').projectDir = new File('../shared-base')
+
+include ":shared-main"
+project(':shared-main').projectDir = new File('../shared-main')
